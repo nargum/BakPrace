@@ -38,7 +38,7 @@ namespace Tree
             TreeNode<string> node11 = new TreeNode<string>("c");
             node2.AddLeftChild(node10);
             node2.AddRightChild(node11);
-            Console.WriteLine(root.BuildExpression());
+            Console.WriteLine(root.BuildShortExpression());
             Console.ReadKey();
  
         }

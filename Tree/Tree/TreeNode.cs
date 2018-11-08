@@ -13,10 +13,29 @@ namespace Tree
         private TreeNode<T> parrent;
         private TreeNode<T> leftChild;
         private TreeNode<T> rightChild;
+        private int priority;
 
         public TreeNode(T data)
         {
             this.data = data;
+            generatePriority();
+        }
+
+        private void generatePriority()
+        {
+            if (data.Equals("*"))
+                priority = 1;
+
+            if (data.Equals("."))
+                priority = 2;
+
+            if (data.Equals("+"))
+                priority = 3;
+        }
+
+        public int getPriority()
+        {
+            return priority;
         }
 
         public T GetData()
@@ -52,7 +71,7 @@ namespace Tree
             rightChild.SetParrent(this);
         }
 
-        public string BuildExpression()
+        public string BuildFullExpression()
         {
             StringBuilder builder = new StringBuilder();
 
@@ -63,13 +82,58 @@ namespace Tree
             }
             else
             {
+                builder.Append("(");
+                if (leftChild != null)              
+                    builder.Append(leftChild.BuildFullExpression());                
+                    
+                builder.Append(GetData());
+
+                if (rightChild != null)
+                    builder.Append(rightChild.BuildFullExpression());
+
+                builder.Append(")");
+
+                return builder.ToString();
+            }
+        }
+
+        public string BuildShortExpression()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (leftChild == null && rightChild == null)
+            {
+                builder.Append(GetData());
+                return builder.ToString();
+            }
+            else
+            {
                 if (leftChild != null)
-                    builder.Append(leftChild.BuildExpression());
+                {
+                    if(getPriority() < leftChild.getPriority())
+                    {
+                        builder.Append("(");
+                        builder.Append(leftChild.BuildShortExpression());
+                        builder.Append(")");
+                    }else
+                        builder.Append(leftChild.BuildShortExpression());
+                }
+                    
 
                 builder.Append(GetData());
 
                 if (rightChild != null)
-                    builder.Append(rightChild.BuildExpression());
+                {
+                    if (getPriority() < rightChild.getPriority())
+                    {
+                        builder.Append("(");
+                        builder.Append(rightChild.BuildShortExpression());
+                        builder.Append(")");
+                    }
+                    else
+                        builder.Append(rightChild.BuildShortExpression());
+                }
+
 
                 return builder.ToString();
             }
