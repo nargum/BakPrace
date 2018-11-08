@@ -18,10 +18,10 @@ namespace Tree
         public TreeNode(T data)
         {
             this.data = data;
-            generatePriority();
+            GeneratePriority();
         }
 
-        private void generatePriority()
+        private void GeneratePriority()
         {
             if (data.Equals("*"))
                 priority = 1;
@@ -33,7 +33,7 @@ namespace Tree
                 priority = 3;
         }
 
-        public int getPriority()
+        public int GetPriority()
         {
             return priority;
         }
@@ -110,7 +110,7 @@ namespace Tree
             {
                 if (leftChild != null)
                 {
-                    comparePriority(this, leftChild, builder);
+                    ComparePriority(this, leftChild, builder);
                 }
                     
 
@@ -118,7 +118,7 @@ namespace Tree
 
                 if (rightChild != null)
                 {
-                    comparePriority(this, rightChild, builder);
+                    ComparePriority(this, rightChild, builder);
                 }
 
 
@@ -126,9 +126,9 @@ namespace Tree
             }
         }
 
-        private void comparePriority(TreeNode<T> currentNode, TreeNode<T> childNode, StringBuilder builder)
+        private void ComparePriority(TreeNode<T> currentNode, TreeNode<T> childNode, StringBuilder builder)
         {
-            if (currentNode.getPriority() < childNode.getPriority())
+            if (currentNode.GetPriority() < childNode.GetPriority())
             {
                 builder.Append("(");
                 builder.Append(childNode.BuildShortExpression());
