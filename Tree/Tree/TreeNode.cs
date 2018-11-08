@@ -110,13 +110,7 @@ namespace Tree
             {
                 if (leftChild != null)
                 {
-                    if(getPriority() < leftChild.getPriority())
-                    {
-                        builder.Append("(");
-                        builder.Append(leftChild.BuildShortExpression());
-                        builder.Append(")");
-                    }else
-                        builder.Append(leftChild.BuildShortExpression());
+                    comparePriority(this, leftChild, builder);
                 }
                     
 
@@ -124,19 +118,24 @@ namespace Tree
 
                 if (rightChild != null)
                 {
-                    if (getPriority() < rightChild.getPriority())
-                    {
-                        builder.Append("(");
-                        builder.Append(rightChild.BuildShortExpression());
-                        builder.Append(")");
-                    }
-                    else
-                        builder.Append(rightChild.BuildShortExpression());
+                    comparePriority(this, rightChild, builder);
                 }
 
 
                 return builder.ToString();
             }
+        }
+
+        private void comparePriority(TreeNode<T> currentNode, TreeNode<T> childNode, StringBuilder builder)
+        {
+            if (currentNode.getPriority() < childNode.getPriority())
+            {
+                builder.Append("(");
+                builder.Append(childNode.BuildShortExpression());
+                builder.Append(")");
+            }
+            else
+                builder.Append(childNode.BuildShortExpression());
         }
 
         public override string ToString()
