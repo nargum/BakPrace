@@ -10,7 +10,7 @@ namespace Tree
     {
         static void Main(string[] args)
         {
-            TreeNode<string> root = new TreeNode<string>("+");
+            /*TreeNode<string> root = new TreeNode<string>("+");
             TreeNode<string> node1 = new TreeNode<string>("*");
             TreeNode<string> node2 = new TreeNode<string>(".");
             root.AddLeftChild(node1);
@@ -38,7 +38,14 @@ namespace Tree
             TreeNode<string> node11 = new TreeNode<string>("c");
             node2.AddLeftChild(node10);
             node2.AddRightChild(node11);
-            Console.WriteLine(root.BuildShortExpression());
+            Console.WriteLine(root.BuildShortExpression());*/
+
+            //ExpressionValidator validator = new ExpressionValidator("(a+b)*cde+1");
+            ExpressionChecker ch = new ExpressionChecker("(a+bcc+c).4..5");
+            ch.parse();
+
+
+            
             Console.ReadKey();
  
         }
