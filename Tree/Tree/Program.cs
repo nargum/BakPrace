@@ -41,8 +41,11 @@ namespace Tree
             Console.WriteLine(root.BuildShortExpression());*/
 
             //ExpressionValidator validator = new ExpressionValidator("(a+b)*cde+1");
-            ExpressionChecker ch = new ExpressionChecker("(a+bcc+c).4..5");
+            ExpressionChecker ch = new ExpressionChecker("a+a+a+a+a+a+a+a+a+a+a");
             ch.parse();
+
+            TreeNode<string> root = ch.getTree();
+            Console.WriteLine(root.BuildShortExpression());
 
 
             

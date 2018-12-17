@@ -11,14 +11,19 @@ namespace Tree
     {
         private T data;
         private TreeNode<T> parrent;
-        private TreeNode<T> leftChild;
-        private TreeNode<T> rightChild;
+        private TreeNode<T> leftChild = null;
+        private TreeNode<T> rightChild = null;
         private int priority;
 
         public TreeNode(T data)
         {
             this.data = data;
             GeneratePriority();
+        }
+
+        public TreeNode()
+        {
+            data = default(T);
         }
 
         private void GeneratePriority()
@@ -46,6 +51,7 @@ namespace Tree
         public void SetData(T data)
         {
             this.data = data;
+            GeneratePriority();
         }
 
         public TreeNode<T> GetParrent()
@@ -56,6 +62,16 @@ namespace Tree
         public void SetParrent(TreeNode<T> parrent)
         {
             this.parrent = parrent;
+        }
+
+        public TreeNode<T> GetLeftChild()
+        {
+            return leftChild;
+        }
+
+        public TreeNode<T> GetRightChild()
+        {
+            return rightChild;
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,22 @@ namespace Tree
         private int counter = -1;
         private char c;
         private Token t;
+        private TreeNode<string> root;
+        private TreeNode<string> currentNode;
+        private ArrayList nodes = new ArrayList();
+        private Stack<TreeNode<string>> brackets = new Stack<TreeNode<string>>();
+        private bool bracket = false;
 
         public ExpressionChecker(string expression)
         {
             expression += "?";
             this.expression = expression;
             
+        }
+
+        public TreeNode<string> getTree()
+        {
+            return root;
         }
 
         public void parse()
@@ -30,6 +41,14 @@ namespace Tree
         
         public void parseS()
         {
+            /*if(t.getValue() != "(" || t.getValue() != ")")
+            {
+                root = new TreeNode<string>(t.getValue());
+            }
+            parseE(root);*/
+            root = new TreeNode<string>();
+            //nodes.Add(root);
+            currentNode = root;
             parseE();
             if(t.getName() != "TEof_")
             {
@@ -39,12 +58,24 @@ namespace Tree
 
         public void parseE()
         {
+            /*TreeNode<string> left = new TreeNode<string>();
+            TreeNode<string> right = new TreeNode<string>();
+            node.AddLeftChild(left);
+            node.AddRightChild(right);
+            parseT(left);
+            parseG(right);*/
             parseT();
             parseG();
         }
 
         public void parseT()
         {
+            /*TreeNode<string> left = new TreeNode<string>();
+            TreeNode<string> right = new TreeNode<string>();
+            node.AddLeftChild(left);
+            node.AddRightChild(right);
+            parseF(left);
+            parseR(right);*/
             parseF();
             parseR();
         }
@@ -65,6 +96,33 @@ namespace Tree
                 switch (t.getName())
                 {
                     case "TIdent_":
+                        TreeNode<string> child = new TreeNode<string>(t.getValue());
+                        /*if(currentNode.GetLeftChild() == null)
+                        {
+                            if(nodes.Count == 0)
+                            {
+                                currentNode.AddLeftChild(child);
+                                nodes.Add(currentNode);
+                        }
+                        else
+                            {
+                                TreeNode<string> n = (TreeNode<string>)nodes[0];
+                                n.AddRightChild(child);
+                                nodes.RemoveAt(0);
+                            }
+                        }*/
+                        if(nodes.Count == 0)
+                        {
+                            currentNode.AddLeftChild(child);
+                            nodes.Add(currentNode);
+                        }
+                        else
+                        {
+                            TreeNode<string> n = (TreeNode<string>)nodes[0];
+                            n.AddRightChild(child);
+                            nodes.RemoveAt(0);
+                        }
+                        
                         t = nextToken();
                         break;
                     case "TLParen_":
@@ -98,6 +156,7 @@ namespace Tree
         {
             if(t.getName() == "TPlus_")
             {
+                currentNode.SetData(t.getValue());
                 t = nextToken();
             }
             else
@@ -110,6 +169,7 @@ namespace Tree
         {
             if (t.getName() == "TDot_")
             {
+                currentNode.SetData(t.getValue());
                 t = nextToken();
             }
             else
@@ -140,6 +200,10 @@ namespace Tree
                 switch (c)
                 {
                     case '(':
+                        bracket = true;
+                        TreeNode<string> br = new TreeNode<string>();
+                        brackets.Push(br);
+                        currentNode = br;
                         c = nextChar();
                         return new TLParen();
                     case ')':
@@ -152,6 +216,33 @@ namespace Tree
                         c = nextChar();
                         return new TDot();
                     case '+':
+                        if(currentNode.GetData() == default(string))
+                        {
+                            currentNode.SetData("+");
+                        }
+                        else
+                        {
+                            TreeNode<string> node = new TreeNode<string>("+");
+                            if (currentNode.GetLeftChild() == null)
+                            {
+                                currentNode.AddLeftChild(node);
+                            }
+                            else
+                            {
+                                if(currentNode.GetRightChild() == null)
+                                {
+                                    currentNode.AddRightChild(node);
+                                }
+                                else
+                                {
+                                    node.AddLeftChild(currentNode.GetRightChild());
+                                    currentNode.AddRightChild(node);
+                                    nodes.Add(node);
+                                }
+                                
+                            }
+                            currentNode = node;
+                        }
                         c = nextChar();
                         return new TPlus();
                     default:
