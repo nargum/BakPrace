@@ -41,13 +41,7 @@ namespace Tree
         
         public void parseS()
         {
-            /*if(t.getValue() != "(" || t.getValue() != ")")
-            {
-                root = new TreeNode<string>(t.getValue());
-            }
-            parseE(root);*/
             root = new TreeNode<string>();
-            //nodes.Add(root);
             currentNode = root;
             parseE();
             if(t.getName() != "TEof_")
@@ -58,24 +52,12 @@ namespace Tree
 
         public void parseE()
         {
-            /*TreeNode<string> left = new TreeNode<string>();
-            TreeNode<string> right = new TreeNode<string>();
-            node.AddLeftChild(left);
-            node.AddRightChild(right);
-            parseT(left);
-            parseG(right);*/
             parseT();
             parseG();
         }
 
         public void parseT()
         {
-            /*TreeNode<string> left = new TreeNode<string>();
-            TreeNode<string> right = new TreeNode<string>();
-            node.AddLeftChild(left);
-            node.AddRightChild(right);
-            parseF(left);
-            parseR(right);*/
             parseF();
             parseR();
         }
@@ -97,31 +79,20 @@ namespace Tree
                 {
                     case "TIdent_":
                         TreeNode<string> child = new TreeNode<string>(t.getValue());
-                        /*if(currentNode.GetLeftChild() == null)
-                        {
-                            if(nodes.Count == 0)
+                        
+                            if (nodes.Count == 0)
                             {
                                 currentNode.AddLeftChild(child);
                                 nodes.Add(currentNode);
-                        }
-                        else
+                            }
+                            else
                             {
                                 TreeNode<string> n = (TreeNode<string>)nodes[0];
                                 n.AddRightChild(child);
                                 nodes.RemoveAt(0);
                             }
-                        }*/
-                        if(nodes.Count == 0)
-                        {
-                            currentNode.AddLeftChild(child);
-                            nodes.Add(currentNode);
-                        }
-                        else
-                        {
-                            TreeNode<string> n = (TreeNode<string>)nodes[0];
-                            n.AddRightChild(child);
-                            nodes.RemoveAt(0);
-                        }
+                        
+                        
                         
                         t = nextToken();
                         break;
