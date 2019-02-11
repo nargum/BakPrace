@@ -8,85 +8,197 @@ namespace Tree
 {
     class ExpressionValidator
     {
+        private char currentCharacter;
+        private Token currentToken;
+        private int counter = -1;
         private string expression;
-        private List<Token> tokens = null;
 
         public ExpressionValidator(string expression)
         {
-            this.expression = modifyExpression(expression);
-            tokens = new List<Token>();
-            if (convertToTokens())
+            this.expression = expression + "?";
+        }
+
+        public void parse()
+        {
+            currentCharacter = nextCharacter();
+            currentToken = nextToken();
+
+            parseS();
+        }
+
+        private void parseS()
+        {
+            parseE();
+            if(currentToken.getName() != "TEof_")
             {
-                returnTokens();
+                error();
+            }
+        }
+
+        private void parseE()
+        {
+            parseT();
+            parseG();
+        }
+
+        private void parseT()
+        {
+            parseF();
+            parseU();
+        }
+
+        private void parseG()
+        {
+            if (currentToken.getName() == "TPlus_")
+            {
+                //parseA();
+                currentToken = nextToken();
+                parseT();
+                parseG();
+            }
+        }
+
+        private void parseF()
+        {
+            parseX();
+            parseH();
+        }
+
+        private void parseU()
+        {
+            if(currentToken.getName() == "TDot_")
+            {
+                
+                currentToken = nextToken();
+            }
+            parseF();
+            parseU();
+        }
+
+        private void parseX()
+        {
+            switch (currentToken.getName())
+            {
+                case "TIdent_":
+                    currentToken = nextToken();
+                    break;
+                case "TLParen_":
+                    currentToken = nextToken();
+                    parseE();
+                    if (currentToken.getName() != "TRParen_")
+                    {
+                        error();
+                    }
+                    currentToken = nextToken();
+                    break;
+                default:
+                    error();
+                    break;
+            }
+        }
+
+        private void parseH()
+        {
+            if(currentToken.getName() == "TStar_")
+            {
+                currentToken = nextToken();
+                parseH();
             }
             else
             {
-                Console.WriteLine("spatne znaky");
+                error();
             }
         }
 
-        public string getExpression()
+        private char nextCharacter()
         {
-            return expression;
-        }
-
-
-        private string modifyExpression(string expression)
-        {
-            expression = expression.ToLower();
-            expression = expression.Replace(" ", string.Empty);
-            expression = expression.Replace("\t", string.Empty);
-
-            return expression;
-        }
-
-        private bool convertToTokens()
-        {
-            for(int i = 0; i < expression.Length; i++)
+            try
             {
-                switch (expression[i])
+                counter++;
+                return expression[counter];
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return '-';
+                //return null;
+            }
+            
+        }
+
+
+        private Token nextToken()
+        {
+            while(currentCharacter == ' ' || currentCharacter == '\t')
+            {
+                currentCharacter = nextCharacter();
+            }
+
+            if (currentCharacter == '?')
+            {
+                return new TEof();
+            }
+            else
+            {
+                switch (currentCharacter)
                 {
                     case '(':
-                        tokens.Add(new TLParen());
-                        break;
+                        currentCharacter = nextCharacter();
+                        return new TLParen();
                     case ')':
-                        tokens.Add(new TRParen());
-                        break;
+                        currentCharacter = nextCharacter();
+                        return new TRParen();
                     case '*':
-                        tokens.Add(new TStar());
-                        break;
+                        currentCharacter = nextCharacter();
+                        return new TStar();
+                    case '.':
+                        currentCharacter = nextCharacter();
+                        return new TDot();
                     case '+':
-                        tokens.Add(new TPlus());
-                        break;
+                        currentCharacter = nextCharacter();
+                        return new TPlus();
                     default:
-                        if(((int)expression[i] >= 48 && (int)expression[i] <= 57) || ((int)expression[i] >= 97 && (int)expression[i] <= 122))
+                        if (isValidCharacter(currentCharacter))
                         {
-                            tokens.Add(new TIdent(expression[i].ToString()));
+                            return isValidIdentificator(currentCharacter);
                         }
                         else
                         {
-                            tokens = null;
-                            return false;
+                            error();
+                            return new TEof();
                         }
-
-                        break;
-
+                        
                 }
             }
-            tokens.Add(new TEof());
-
-            return true;
         }
 
-        public void returnTokens()
+        private bool isValidCharacter(char c)
         {
-            string result = null;
-            foreach(Token t in tokens)
+            if (((int)c >= 48 && (int)c <= 57) || ((int)c >= 97 && (int)c <= 122))
             {
-                result += t.getName();
+                return true;
             }
-
-            Console.WriteLine(result);
+            else
+            {
+                return false;
+            }
         }
+
+        private Token isValidIdentificator(char c)
+        {
+            char s = c;
+            currentCharacter = nextCharacter();
+            while (isValidCharacter(currentCharacter))
+            {
+                s += currentCharacter;
+                currentCharacter = nextCharacter();
+            }
+            return new TIdent(s.ToString());
+        }
+
+        private void error()
+        {
+            Console.WriteLine("Invalid expression");
+        }
+
     }
 }
