@@ -12,6 +12,7 @@ namespace Tree
         private Token currentToken;
         private int counter = -1;
         private string expression;
+        private int starNumber = 0;
 
         public ExpressionValidator(string expression)
         {
@@ -66,13 +67,14 @@ namespace Tree
 
         private void parseU()
         {
-            if(currentToken.getName() == "TDot_")
+            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TLParen" || currentToken.getName() == "TIdent")
             {
                 
                 currentToken = nextToken();
+                parseF();
+                parseU();
             }
-            parseF();
-            parseU();
+            
         }
 
         private void parseX()
@@ -99,15 +101,16 @@ namespace Tree
 
         private void parseH()
         {
-            if(currentToken.getName() == "TStar_")
+            
+            if(currentToken.getName() == "TStar_" && starNumber == 0)
             {
+                starNumber++;
                 currentToken = nextToken();
                 parseH();
             }
-            else
-            {
-                error();
-            }
+
+            starNumber = 0;
+            
         }
 
         private char nextCharacter()
