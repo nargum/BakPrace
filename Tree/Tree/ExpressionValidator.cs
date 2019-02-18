@@ -12,7 +12,8 @@ namespace Tree
         private Token currentToken;
         private int counter = -1;
         private string expression;
-        private int starNumber = 0;
+        private int starCounter = 0;
+        private bool falseExpression = false;
 
         public ExpressionValidator(string expression)
         {
@@ -52,7 +53,6 @@ namespace Tree
         {
             if (currentToken.getName() == "TPlus_")
             {
-                //parseA();
                 currentToken = nextToken();
                 parseT();
                 parseG();
@@ -82,6 +82,7 @@ namespace Tree
             switch (currentToken.getName())
             {
                 case "TIdent_":
+                    TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                     currentToken = nextToken();
                     break;
                 case "TLParen_":
@@ -102,14 +103,14 @@ namespace Tree
         private void parseH()
         {
             
-            if(currentToken.getName() == "TStar_" && starNumber == 0)
+            if(currentToken.getName() == "TStar_" && starCounter == 0)
             {
-                starNumber++;
+                starCounter++;
                 currentToken = nextToken();
                 parseH();
             }
 
-            starNumber = 0;
+            starCounter = 0;
             
         }
 
@@ -200,7 +201,13 @@ namespace Tree
 
         private void error()
         {
-            Console.WriteLine("Invalid expression");
+            if(falseExpression == false)
+            {
+                falseExpression = true;
+
+                Console.WriteLine("False expression");
+            }
+
         }
 
     }
