@@ -47,7 +47,7 @@ namespace Tree
             //TreeNode<string> root = ch.getTree();
             //Console.WriteLine(root.BuildShortExpression());
 
-            ExpressionValidator v = new ExpressionValidator("a.c.b");
+            ExpressionValidator v = new ExpressionValidator("a.b+a.a+b+c");
             TreeNode<string> root = v.parse();
             Console.WriteLine(root.BuildShortExpression());
 

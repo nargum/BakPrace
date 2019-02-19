@@ -60,7 +60,12 @@ namespace Tree
             TreeNode<string> nodeU = parseU();
 
             if (nodeU != null)
-                nodeF.AddRightChild(nodeU);
+            {
+                //nodeF.AddRightChild(nodeU);
+                nodeU.AddLeftChild(nodeF);
+                return nodeU;
+            }
+                //nodeF.AddRightChild(nodeU);
 
             return nodeF;
         }
@@ -114,12 +119,20 @@ namespace Tree
                 TreeNode<string> nodeF = parseF();
                 TreeNode<string> nodeU = parseU();
 
-                
                 if(nodeU != null)
-                    nodeF.AddRightChild(nodeU);
+                {
+                    nodeU.AddLeftChild(nodeF);
+                    node.AddRightChild(nodeU);
+                    return node;
+                }
 
                 node.AddRightChild(nodeF);
                 return node;
+                /*if(nodeU != null)
+                    nodeF.AddRightChild(nodeU);
+
+                node.AddRightChild(nodeF);
+                return node;*/
                 
             }else if(currentToken.getName() == "TLParen")
             {
