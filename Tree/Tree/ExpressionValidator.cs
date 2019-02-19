@@ -20,97 +20,161 @@ namespace Tree
             this.expression = expression + "?";
         }
 
-        public void parse()
+        public TreeNode<string> parse()
         {
             currentCharacter = nextCharacter();
             currentToken = nextToken();
 
-            parseS();
+            return parseS();
         }
 
-        private void parseS()
+        private TreeNode<string> parseS()
         {
-            parseE();
+            TreeNode<string> nodeS = parseE();
             if(currentToken.getName() != "TEof_")
             {
                 error();
+                return null;
             }
+            return nodeS;
         }
 
-        private void parseE()
+        private TreeNode<string> parseE()
         {
-            parseT();
-            parseG();
+            TreeNode<string> nodeT = parseT();
+            TreeNode<string> nodeG = parseG();
+
+            if(nodeG != null)
+            {
+                //nodeT.AddRightChild(nodeG);
+                nodeG.AddLeftChild(nodeT);
+                return nodeG;
+            }
+
+            return nodeT;
         }
 
-        private void parseT()
+        private TreeNode<string> parseT()
         {
-            parseF();
-            parseU();
+            TreeNode<string> nodeF = parseF();
+            TreeNode<string> nodeU = parseU();
+
+            if (nodeU != null)
+                nodeF.AddRightChild(nodeU);
+
+            return nodeF;
         }
 
-        private void parseG()
+        private TreeNode<string> parseG()
         {
             if (currentToken.getName() == "TPlus_")
             {
+                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
-                parseT();
-                parseG();
-            }
-        }
+                TreeNode<string> nodeT = parseT();
+                TreeNode<string> nodeG = parseG();
 
-        private void parseF()
-        {
-            parseX();
-            parseH();
-        }
+                if(nodeG != null)
+                {
+                    //nodeT.AddRightChild(nodeG);
+                    nodeG.AddLeftChild(nodeT);
+                    node.AddRightChild(nodeG);
+                    return node;
+                }
 
-        private void parseU()
-        {
-            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TLParen" || currentToken.getName() == "TIdent")
-            {
+                node.AddRightChild(nodeT);
+
+                return node;
                 
-                currentToken = nextToken();
-                parseF();
-                parseU();
+
             }
+            return null;
+        }
+
+        private TreeNode<string> parseF()
+        {
+            TreeNode<string> nodeX = parseX();
+            TreeNode<string> nodeH = parseH();
+
+            if(nodeH == null)
+            {
+                return nodeX;
+            }
+            
+            nodeH.AddLeftChild(nodeX);
+            return nodeH;
+        }
+
+        private TreeNode<string> parseU()
+        {
+            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent")
+            {
+                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
+                currentToken = nextToken();
+                TreeNode<string> nodeF = parseF();
+                TreeNode<string> nodeU = parseU();
+
+                
+                if(nodeU != null)
+                    nodeF.AddRightChild(nodeU);
+
+                node.AddRightChild(nodeF);
+                return node;
+                
+            }else if(currentToken.getName() == "TLParen")
+            {
+                currentToken = nextToken();
+                TreeNode<string> nodeF = parseF();
+                TreeNode<string> nodeU = parseU();
+
+                if(nodeU != null)
+                    nodeF.AddRightChild(nodeU);
+                return nodeF;
+            }
+            return null;
             
         }
 
-        private void parseX()
+        private TreeNode<string> parseX()
         {
+            TreeNode<string> node = new TreeNode<string>();
             switch (currentToken.getName())
             {
                 case "TIdent_":
-                    TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
+                    //TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
+                    node.SetData(currentToken.getValue());
                     currentToken = nextToken();
-                    break;
+                    return node;
                 case "TLParen_":
                     currentToken = nextToken();
-                    parseE();
+                    node = parseE();
                     if (currentToken.getName() != "TRParen_")
                     {
                         error();
+                        return null;
                     }
                     currentToken = nextToken();
-                    break;
+                    return node;
                 default:
                     error();
-                    break;
+                    return null;
             }
         }
 
-        private void parseH()
+        private TreeNode<string> parseH()
         {
-            
+            TreeNode<string> node = null;
             if(currentToken.getName() == "TStar_" && starCounter == 0)
             {
                 starCounter++;
+                node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
-                parseH();
+                TreeNode<string> child = parseH();
+                node.AddRightChild(child);
             }
 
             starCounter = 0;
+            return node;
             
         }
 
