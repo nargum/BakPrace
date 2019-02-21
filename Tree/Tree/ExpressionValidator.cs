@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tree.Tokens;
 
 namespace Tree
 {
@@ -95,6 +96,11 @@ namespace Tree
                 return node;
                 
 
+            }else if(currentToken.getName() == "TEps_")
+            {
+                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
+                currentToken = nextToken();
+                return node;
             }
             return null;
         }
@@ -115,7 +121,7 @@ namespace Tree
 
         private TreeNode<string> parseU()
         {
-            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent")
+            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_")
             {
                 TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
@@ -132,7 +138,7 @@ namespace Tree
                 node.AddRightChild(nodeF);
                 return node;
                 
-            }else if(currentToken.getName() == "TLParen")
+            }else if(currentToken.getName() == "TLParen_")
             {
                 currentToken = nextToken();
                 TreeNode<string> nodeF = parseF();
@@ -141,6 +147,11 @@ namespace Tree
                 if(nodeU != null)
                     nodeF.AddRightChild(nodeU);
                 return nodeF;
+            }else if(currentToken.getName() == "TEps_")
+            {
+                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
+                currentToken = nextToken();
+                return node;
             }
             return null;
             
@@ -165,6 +176,14 @@ namespace Tree
                     }
                     currentToken = nextToken();
                     return node;
+                case "TEmptySet_":
+                    node.SetData(currentToken.getValue());
+                    currentToken = nextToken();
+                    return node;
+                case "TEps_":
+                    node.SetData(currentToken.getValue());
+                    currentToken = nextToken();
+                    return node;
                 default:
                     error();
                     return null;
@@ -186,6 +205,10 @@ namespace Tree
                     node.AddRightChild(child);
                 }
                 
+            }else if(currentToken.getName() == "TEps_")
+            {
+                node = new TreeNode<string>(currentToken.getValue());
+                currentToken = nextToken();
             }
 
             starCounter = 0;
@@ -238,6 +261,12 @@ namespace Tree
                     case '+':
                         currentCharacter = nextCharacter();
                         return new TPlus();
+                    case '#':
+                        currentCharacter = nextCharacter();
+                        return new TEmptySet();
+                    case 'ε':
+                        currentCharacter = nextCharacter();
+                        return new TEps();
                     default:
                         if (isValidCharacter(currentCharacter))
                         {

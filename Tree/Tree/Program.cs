@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,50 +10,18 @@ namespace Tree
     {
         static void Main(string[] args)
         {
-            /*TreeNode<string> root = new TreeNode<string>("+");
-            TreeNode<string> node1 = new TreeNode<string>("*");
-            TreeNode<string> node2 = new TreeNode<string>(".");
-            root.AddLeftChild(node1);
-            root.AddRightChild(node2);
+            Console.WriteLine("Znak pro epsilon: ε");
+            Console.WriteLine("Znak pro empty set: #");
+            Console.WriteLine();
 
-            TreeNode<string> node3 = new TreeNode<string>("+");
-            node1.AddLeftChild(node3);
 
-            TreeNode<string> node4 = new TreeNode<string>("a");
-            TreeNode<string> node5 = new TreeNode<string>(".");
-            node3.AddLeftChild(node4);
-            node3.AddRightChild(node5);
-
-            TreeNode<string> node6 = new TreeNode<string>("b");
-            TreeNode<string> node7 = new TreeNode<string>(".");
-            node5.AddLeftChild(node6);
-            node5.AddRightChild(node7);
-
-            TreeNode<string> node8 = new TreeNode<string>("a");
-            TreeNode<string> node9 = new TreeNode<string>("b");
-            node7.AddLeftChild(node8);
-            node7.AddRightChild(node9);
-
-            TreeNode<string> node10 = new TreeNode<string>("b");
-            TreeNode<string> node11 = new TreeNode<string>("c");
-            node2.AddLeftChild(node10);
-            node2.AddRightChild(node11);
-            Console.WriteLine(root.BuildShortExpression());*/
-
-            //ExpressionValidator validator = new ExpressionValidator("(a+b)*cde+1");
-            //ExpressionChecker ch = new ExpressionChecker();
-            //ch.parse();
-
-            //TreeNode<string> root = ch.getTree();
-            //Console.WriteLine(root.BuildShortExpression());
-
-            ExpressionValidator v = new ExpressionValidator("..");
+            ExpressionValidator v = new ExpressionValidator("(a+b)*+b.(a+c)");
             TreeNode<string> root = v.parse();
 
             try
             {
-                Console.WriteLine(root.BuildShortExpression());
-                Console.WriteLine(root.BuildFullExpression());
+                Console.WriteLine("Short expression: " + root.BuildShortExpression());
+                Console.WriteLine("Long expression: " + root.BuildFullExpression());
             }
             catch (NullReferenceException)
             {

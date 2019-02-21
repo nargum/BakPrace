@@ -42,12 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExpressionChecker.cs" />
     <Compile Include="ExpressionValidator.cs" />
-    <Compile Include="Tester.cs" />
     <Compile Include="Tokens\TDot.cs" />
     <Compile Include="Tokens\TEmptySet.cs" />
     <Compile Include="Tokens\TEof.cs" />
+    <Compile Include="Tokens\TEps.cs" />
     <Compile Include="Tokens\TIdent.cs" />
     <Compile Include="Tokens\TLParen.cs" />
     <Compile Include="Program.cs" />
