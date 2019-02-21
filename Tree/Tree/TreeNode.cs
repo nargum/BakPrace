@@ -78,13 +78,30 @@ namespace Tree
         public void AddLeftChild(TreeNode<T> leftChild)
         {
             this.leftChild = leftChild;
-            leftChild.SetParrent(this);
+            try
+            {
+                leftChild.SetParrent(this);
+            }
+            catch (NullReferenceException)
+            {
+                //left child is null
+            }
         }
 
         public void AddRightChild(TreeNode<T> rightChild)
         {
             this.rightChild = rightChild;
-            rightChild.SetParrent(this);
+
+            try
+            {
+                rightChild.SetParrent(this);
+            }
+            catch (NullReferenceException)
+            {
+                //right child is null
+                
+            }
+            
         }
 
         public string BuildFullExpression()

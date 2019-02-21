@@ -13,7 +13,7 @@ namespace Tree
         private int counter = -1;
         private string expression;
         private int starCounter = 0;
-        private bool falseExpression = false;
+        private bool isFalseExpression = false;
 
         public ExpressionValidator(string expression)
         {
@@ -25,7 +25,14 @@ namespace Tree
             currentCharacter = nextCharacter();
             currentToken = nextToken();
 
-            return parseS();
+            TreeNode<string> nodeS = parseS();
+
+            if (isFalseExpression)
+            {
+                return null;
+            }
+
+            return nodeS;
         }
 
         private TreeNode<string> parseS()
@@ -46,7 +53,6 @@ namespace Tree
 
             if(nodeG != null)
             {
-                //nodeT.AddRightChild(nodeG);
                 nodeG.AddLeftChild(nodeT);
                 return nodeG;
             }
@@ -61,11 +67,9 @@ namespace Tree
 
             if (nodeU != null)
             {
-                //nodeF.AddRightChild(nodeU);
                 nodeU.AddLeftChild(nodeF);
                 return nodeU;
             }
-                //nodeF.AddRightChild(nodeU);
 
             return nodeF;
         }
@@ -81,7 +85,6 @@ namespace Tree
 
                 if(nodeG != null)
                 {
-                    //nodeT.AddRightChild(nodeG);
                     nodeG.AddLeftChild(nodeT);
                     node.AddRightChild(nodeG);
                     return node;
@@ -128,11 +131,6 @@ namespace Tree
 
                 node.AddRightChild(nodeF);
                 return node;
-                /*if(nodeU != null)
-                    nodeF.AddRightChild(nodeU);
-
-                node.AddRightChild(nodeF);
-                return node;*/
                 
             }else if(currentToken.getName() == "TLParen")
             {
@@ -154,7 +152,6 @@ namespace Tree
             switch (currentToken.getName())
             {
                 case "TIdent_":
-                    //TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                     node.SetData(currentToken.getValue());
                     currentToken = nextToken();
                     return node;
@@ -183,7 +180,12 @@ namespace Tree
                 node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
                 TreeNode<string> child = parseH();
-                node.AddRightChild(child);
+
+                if(child != null)
+                {
+                    node.AddRightChild(child);
+                }
+                
             }
 
             starCounter = 0;
@@ -201,7 +203,6 @@ namespace Tree
             catch (IndexOutOfRangeException)
             {
                 return '-';
-                //return null;
             }
             
         }
@@ -278,9 +279,9 @@ namespace Tree
 
         private void error()
         {
-            if(falseExpression == false)
+            if(isFalseExpression == false)
             {
-                falseExpression = true;
+                isFalseExpression = true;
 
                 Console.WriteLine("False expression");
             }
