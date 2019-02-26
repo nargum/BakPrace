@@ -15,11 +15,12 @@ namespace Tree
             Console.WriteLine();
 
 
-            ExpressionValidator v = new ExpressionValidator("(a*)*.d****");
+            ExpressionValidator v = new ExpressionValidator("((a*)b)");
             TreeNode<string> root = v.parse();
 
             try
             {
+                Console.WriteLine("Entered expression: " + v.getExpression());
                 Console.WriteLine("Short expression: " + root.BuildShortExpression());
                 Console.WriteLine("Long expression: " + root.BuildFullExpression());
             }

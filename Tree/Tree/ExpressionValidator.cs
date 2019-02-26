@@ -20,6 +20,11 @@ namespace Tree
             this.expression = expression + "?";
         }
 
+        public string getExpression()
+        {
+            return expression;
+        }
+
         public TreeNode<string> parse()
         {
             currentCharacter = nextCharacter();
@@ -118,7 +123,7 @@ namespace Tree
 
         private TreeNode<string> parseU()
         {
-            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_" || currentToken.getName() == "TEps_")
+            if(currentToken.getName() == "TDot_")
             {
                 TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
@@ -135,15 +140,35 @@ namespace Tree
                 node.AddRightChild(nodeF);
                 return node;
                 
-            }else if(currentToken.getName() == "TLParen_")
+            }else if(currentToken.getName() == "TLParen_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_" || currentToken.getName() == "TEps_")
             {
-                currentToken = nextToken();
+                if(currentToken.getName() == "TLParen_")
+                {
+                    currentToken = nextToken();
+                }
+
+                TreeNode<string> node = new TreeNode<string>(".");
                 TreeNode<string> nodeF = parseF();
                 TreeNode<string> nodeU = parseU();
 
-                if(nodeU != null)
-                    nodeF.AddRightChild(nodeU);
-                return nodeF;
+                /*if(nodeU != null)
+                    nodeF.AddRightChild(nodeU);*/
+
+                if (nodeU != null)
+                {
+                    nodeU.AddLeftChild(nodeF);
+                    node.AddRightChild(nodeU);
+                    return node;
+                }
+
+                node.AddRightChild(nodeF);
+
+                if(currentToken.getName() == "TRParen_")
+                {
+                    currentToken = nextToken();
+                }
+                //return nodeF;
+                return node;
             }
             return null;
             
@@ -304,11 +329,12 @@ namespace Tree
         {
             string s = c.ToString();
             currentCharacter = nextCharacter();
+            /*currentCharacter = nextCharacter();
             while (isValidCharacter(currentCharacter))
             {
                 s += currentCharacter;
                 currentCharacter = nextCharacter();
-            }
+            }*/
             return new TIdent(s.ToString());
         }
 
