@@ -13,7 +13,6 @@ namespace Tree
         private Token currentToken;
         private int counter = -1;
         private string expression;
-        private int starCounter = 0;
         private bool isFalseExpression = false;
 
         public ExpressionValidator(string expression)
@@ -96,11 +95,6 @@ namespace Tree
                 return node;
                 
 
-            }else if(currentToken.getName() == "TEps_")
-            {
-                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
-                currentToken = nextToken();
-                return node;
             }
             return null;
         }
@@ -108,20 +102,23 @@ namespace Tree
         private TreeNode<string> parseF()
         {
             TreeNode<string> nodeX = parseX();
-            TreeNode<string> nodeH = parseH();
+            TreeNode<string> nodeH = parseH(nodeX);
 
             if(nodeH == null)
             {
                 return nodeX;
             }
-            
-            nodeH.AddLeftChild(nodeX);
+
+            //nodeH.AddLeftChild(nodeX);
             return nodeH;
+            //nodeX.AddRightChild(nodeH);
+            //return nodeX;
+            
         }
 
         private TreeNode<string> parseU()
         {
-            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_")
+            if(currentToken.getName() == "TDot_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_" || currentToken.getName() == "TEps_")
             {
                 TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
@@ -147,11 +144,6 @@ namespace Tree
                 if(nodeU != null)
                     nodeF.AddRightChild(nodeU);
                 return nodeF;
-            }else if(currentToken.getName() == "TEps_")
-            {
-                TreeNode<string> node = new TreeNode<string>(currentToken.getValue());
-                currentToken = nextToken();
-                return node;
             }
             return null;
             
@@ -190,30 +182,44 @@ namespace Tree
             }
         }
 
-        private TreeNode<string> parseH()
+        private TreeNode<string> parseH(TreeNode<string> nodeX)
         {
-            TreeNode<string> node = null;
-            if(currentToken.getName() == "TStar_" && starCounter == 0)
+            TreeNode<string> root = null;
+            if (currentToken.getName() == "TStar_")
             {
-                starCounter++;
-                node = new TreeNode<string>(currentToken.getValue());
+                root = new TreeNode<string>(currentToken.getValue());
                 currentToken = nextToken();
-                TreeNode<string> child = parseH();
+                int starCounter = 0;
 
-                if(child != null)
+                while(currentToken.getName() == "TStar_")
                 {
-                    node.AddRightChild(child);
+                    starCounter++;
+                    currentToken = nextToken();
                 }
-                
-            }else if(currentToken.getName() == "TEps_")
-            {
-                node = new TreeNode<string>(currentToken.getValue());
-                currentToken = nextToken();
-            }
 
-            starCounter = 0;
-            return node;
-            
+                if(starCounter > 0)
+                {
+                    TreeNode<string>[] node = new TreeNode<string>[starCounter];
+                    for (int i = 0; i < node.Length; i++)
+                    {
+                        node[i] = new TreeNode<string>("*");
+                    }
+                    node[starCounter - 1].AddLeftChild(nodeX);
+
+                    for (int i = starCounter - 1; i > 0; i--)
+                    {
+                        node[i - 1].AddLeftChild(node[i]);
+                    }
+
+                    root.AddLeftChild(node[0]);
+                }
+                else
+                {
+                    root.AddLeftChild(nodeX);
+                }
+
+            }
+            return root;
         }
 
         private char nextCharacter()
@@ -296,7 +302,7 @@ namespace Tree
 
         private Token isValidIdentificator(char c)
         {
-            char s = c;
+            string s = c.ToString();
             currentCharacter = nextCharacter();
             while (isValidCharacter(currentCharacter))
             {

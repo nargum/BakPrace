@@ -15,7 +15,7 @@ namespace Tree
             Console.WriteLine();
 
 
-            ExpressionValidator v = new ExpressionValidator("(a+b)*+b.(a+c)");
+            ExpressionValidator v = new ExpressionValidator("(a*)*.d****");
             TreeNode<string> root = v.parse();
 
             try
