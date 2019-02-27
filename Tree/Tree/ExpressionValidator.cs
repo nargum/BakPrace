@@ -22,7 +22,8 @@ namespace Tree
 
         public string getExpression()
         {
-            return expression;
+            string returnExpression = expression.Remove(expression.Length - 1, 1);
+            return returnExpression;
         }
 
         public TreeNode<string> parse()
@@ -114,11 +115,7 @@ namespace Tree
                 return nodeX;
             }
 
-            //nodeH.AddLeftChild(nodeX);
             return nodeH;
-            //nodeX.AddRightChild(nodeH);
-            //return nodeX;
-            
         }
 
         private TreeNode<string> parseU()
@@ -142,17 +139,9 @@ namespace Tree
                 
             }else if(currentToken.getName() == "TLParen_" || currentToken.getName() == "TIdent_" || currentToken.getName() == "TEmptySet_" || currentToken.getName() == "TEps_")
             {
-                if(currentToken.getName() == "TLParen_")
-                {
-                    currentToken = nextToken();
-                }
-
                 TreeNode<string> node = new TreeNode<string>(".");
                 TreeNode<string> nodeF = parseF();
                 TreeNode<string> nodeU = parseU();
-
-                /*if(nodeU != null)
-                    nodeF.AddRightChild(nodeU);*/
 
                 if (nodeU != null)
                 {
@@ -162,12 +151,6 @@ namespace Tree
                 }
 
                 node.AddRightChild(nodeF);
-
-                if(currentToken.getName() == "TRParen_")
-                {
-                    currentToken = nextToken();
-                }
-                //return nodeF;
                 return node;
             }
             return null;
@@ -301,7 +284,9 @@ namespace Tree
                     default:
                         if (isValidCharacter(currentCharacter))
                         {
-                            return isValidIdentificator(currentCharacter);
+                            char c = currentCharacter;
+                            currentCharacter = nextCharacter();
+                            return new TIdent(c.ToString());
                         }
                         else
                         {
@@ -323,19 +308,6 @@ namespace Tree
             {
                 return false;
             }
-        }
-
-        private Token isValidIdentificator(char c)
-        {
-            string s = c.ToString();
-            currentCharacter = nextCharacter();
-            /*currentCharacter = nextCharacter();
-            while (isValidCharacter(currentCharacter))
-            {
-                s += currentCharacter;
-                currentCharacter = nextCharacter();
-            }*/
-            return new TIdent(s.ToString());
         }
 
         private void error()

@@ -146,8 +146,11 @@ namespace Tree
                     ComparePriority(this, leftChild, builder);
                 }
                     
-
-                builder.Append(GetData());
+                if(!GetData().Equals("."))
+                {
+                    builder.Append(GetData());
+                }
+                
 
                 if (rightChild != null)
                 {
